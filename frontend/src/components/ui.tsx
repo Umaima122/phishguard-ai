@@ -29,7 +29,7 @@ export const levelStyle: Record<ThreatLevel, { text: string; chip: string; hex: 
 }
 
 export function SevBadge({ s }: { s: Severity }) {
-  return <span className={`chip shrink-0 self-start capitalize ${sevStyle[s]}`}>{s}</span>
+  return <span className={`chip mt-[4px] min-w-[68px] shrink-0 self-start capitalize ${sevStyle[s]}`}>{s}</span>
 }
 
 export function DemoBadge({ label = 'Demo data' }: { label?: string }) {
