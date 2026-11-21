@@ -1,6 +1,6 @@
 # PhishGuard AI
 
-> Lite build for Render's free tier: TF-IDF engine only (BERT needs more than 512 MB RAM).
+> Render free-tier build: TF-IDF plus Sentence-BERT running on ONNX Runtime (fastembed), trained during the Docker build.
 
 **Think Before You Click. Let AI Investigate.**
 An AI-powered phishing email detection and cybersecurity awareness platform.
