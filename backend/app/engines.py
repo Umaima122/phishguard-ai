@@ -8,7 +8,7 @@ import threading
 import joblib
 import numpy as np
 
-from .preprocess import clean_text
+from . import embedder
 from .training import MODELS, train_bert
 
 log = logging.getLogger("phishguard")
@@ -65,18 +65,18 @@ class BertEngine:
         if os.getenv("DISABLE_BERT") == "1":
             self.error = "Disabled by DISABLE_BERT=1"
             return
-        try:
-            import sentence_transformers  # noqa: F401
-        except ImportError:
-            self.error = "Not included in this deployment (lite build, needs more RAM)"
+        if not embedder.available():
+            self.error = "Not included in this deployment (no embedding library installed)"
+            return
+        if not (MODELS / "bert.joblib").exists() and os.getenv("BERT_TRAIN_ON_BOOT", "1") == "0":
+            self.error = "BERT model not trained. Run: python backend/scripts/train.py --bert-only"
             return
         threading.Thread(target=self._boot, daemon=True).start()
 
     def _boot(self):
-        from sentence_transformers import SentenceTransformer
         try:
             self.status = "loading"
-            self.embedder = SentenceTransformer("all-MiniLM-L6-v2")
+            self.embedder = embedder.load()
             path = MODELS / "bert.joblib"
             if not path.exists():
                 self.status = "training"
@@ -91,7 +91,7 @@ class BertEngine:
 
     def predict(self, text: str) -> dict:
         with self._lock:
-            emb = self.embedder.encode([clean_text(text)[:2000]], normalize_embeddings=True)
+            emb = self.embedder.encode([text])
         return {"score": float(self.clf.predict_proba(emb)[0][1]) * 100, "top_terms": []}
 
 

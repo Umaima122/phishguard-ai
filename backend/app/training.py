@@ -66,21 +66,17 @@ def train_tfidf(csv: str | None = None, log=print) -> dict:
 
 
 def train_bert(csv: str | None = None, log=print, embedder=None) -> dict:
-    """Sentence-BERT (all-MiniLM-L6-v2) embeddings + Logistic Regression, same split as TF-IDF."""
+    """Sentence-BERT (all-MiniLM-L6-v2) embeddings + Logistic Regression."""
+    from . import embedder as emb_mod
     path = dataset.find_dataset(csv)
     if not path:
         raise FileNotFoundError("Dataset not found.")
     df, info = dataset.load(path)
-    if embedder is None:
-        from sentence_transformers import SentenceTransformer
-        embedder = SentenceTransformer("all-MiniLM-L6-v2")
+    embedder = embedder or emb_mod.load()
     X_tr, X_te, y_tr, y_te = _split(df)
     t0 = time.time()
-    # MiniLM reads up to 256 tokens; cleaned text keeps the embedding focused on wording
-    enc = lambda xs: embedder.encode([clean_text(x)[:2000] for x in xs], batch_size=64,
-                                     show_progress_bar=False, normalize_embeddings=True)
-    log(f"BERT: encoding {len(X_tr) + len(X_te):,} emails...")
-    E_tr, E_te = enc(X_tr), enc(X_te)
+    log(f"BERT: encoding {len(X_tr) + len(X_te):,} emails with {getattr(embedder, 'backend', '?')} backend...")
+    E_tr, E_te = embedder.encode(X_tr), embedder.encode(X_te)
     clf = LogisticRegression(C=2.0, max_iter=3000, class_weight="balanced", random_state=SEED)
     clf.fit(E_tr, y_tr)
     prob = clf.predict_proba(E_te)[:, 1]
@@ -90,7 +86,5 @@ def train_bert(csv: str | None = None, log=print, embedder=None) -> dict:
                "features": int(E_tr.shape[1]),
                "trained_at": datetime.now(timezone.utc).isoformat(timespec="seconds"), "dataset": info}
     _save("bert", clf, metrics)
-    log(f"BERT: acc {m['accuracy']:.4f}  f1 {m['f1']:.4f}")
+    log(f"BERT: acc {m['accuracy']:.4f}  f1 {m['f1']:.4f}  ({metrics['train_seconds']}s)")
     return metrics
-
-

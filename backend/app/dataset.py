@@ -7,7 +7,7 @@ import pandas as pd
 from .preprocess import clean_text
 
 ROOT = Path(__file__).resolve().parents[2]  # repo root
-CANDIDATES = ["Phishing_Email.csv", "phishing_email.csv", "emails.csv", "data/Phishing_Email.csv",
+CANDIDATES = ["Phishing_Email.csv", "backend/data/emails_part*.csv.gz", "phishing_email.csv", "emails.csv", "data/Phishing_Email.csv",
               "backend/data/Phishing_Email.csv", "data/emails.csv"]
 TEXT_COLS = ["Email Text", "email_text", "text", "body", "Body", "content"]
 LABEL_COLS = ["Email Type", "label", "Label", "type", "class"]
@@ -16,21 +16,30 @@ LABEL_MAP = {"phishing email": 1, "phishing": 1, "spam": 1, "1": 1,
 
 
 def find_dataset(explicit: str | None = None) -> Path | None:
-    if explicit:
-        p = Path(explicit)
-        return p if p.exists() else None
-    for c in CANDIDATES:
-        p = ROOT / c
-        if p.exists():
+    for c in ([explicit] if explicit else CANDIDATES):
+        p = Path(c) if Path(c).is_absolute() or explicit else ROOT / c
+        if "*" in p.name:
+            if sorted(p.parent.glob(p.name)):
+                return p
+        elif p.exists():
             return p
     return None
 
 
+def _read(path: Path) -> pd.DataFrame:
+    """Read one CSV, or every file matching a glob like emails_part*.csv.gz."""
+    files = sorted(path.parent.glob(path.name)) if "*" in path.name else [path]
+    frames = []
+    for f in files:
+        try:
+            frames.append(pd.read_csv(f, on_bad_lines="skip"))
+        except UnicodeDecodeError:
+            frames.append(pd.read_csv(f, on_bad_lines="skip", encoding="latin-1"))
+    return pd.concat(frames, ignore_index=True)
+
+
 def load(path: Path) -> tuple[pd.DataFrame, dict]:
-    try:
-        df = pd.read_csv(path, on_bad_lines="skip")
-    except UnicodeDecodeError:
-        df = pd.read_csv(path, on_bad_lines="skip", encoding="latin-1")
+    df = _read(path)
     text_col = next((c for c in TEXT_COLS if c in df.columns), None)
     label_col = next((c for c in LABEL_COLS if c in df.columns), None)
     if not text_col or not label_col:

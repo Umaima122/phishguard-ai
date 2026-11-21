@@ -21,7 +21,7 @@ from .preprocess import combine
 from .url_checker import extract_urls, inspect_url
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-app = FastAPI(title="PhishGuard AI API", version="2.0.0")
+app = FastAPI(title="PhishGuard AI API", version="3.0.0")
 app.add_middleware(CORSMiddleware, allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
                    allow_methods=["*"], allow_headers=["*"])
 
