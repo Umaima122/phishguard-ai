@@ -14,8 +14,9 @@ ENV PYTHONUNBUFFERED=1 \
 WORKDIR /app
 COPY backend/requirements.txt backend/requirements.txt
 RUN pip install --no-cache-dir -r backend/requirements.txt
-COPY . .
-COPY --from=web /web/dist frontend/dist
+# Backend first: the BERT training layer below is cached and only reruns when
+# backend files change, so frontend-only deploys stay fast.
+COPY backend/ backend/
 RUN mkdir -p backend/data
 
 # Download MiniLM and train the BERT classifier once, at build time, so the small
@@ -23,6 +24,8 @@ RUN mkdir -p backend/data
 # deploys with the TF-IDF engine.
 RUN EMBED_THREADS=$(nproc) python backend/scripts/train.py --bert-only --csv "backend/data/emails_part*.csv.gz" \
     || echo "BERT training skipped; TF-IDF only"
+
+COPY --from=web /web/dist frontend/dist
 
 # Render provides $PORT; falls back to 7860 locally
 CMD ["sh", "-c", "uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port ${PORT:-7860}"]
