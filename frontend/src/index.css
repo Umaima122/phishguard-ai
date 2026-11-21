@@ -60,7 +60,10 @@
   }
   .btn-ghost { @apply border border-line bg-white/[0.02] text-fg hover:border-line-strong hover:bg-white/[0.05]; }
   .btn-quiet { @apply text-dim hover:bg-white/[0.04] hover:text-fg; }
-  .chip { @apply inline-flex items-center gap-1.5 rounded-[2px] border px-2 py-[3px] text-[12px] font-medium whitespace-nowrap; }
+  /* Status label: coloured square + text. No pill, no box. */
+  .chip { @apply inline-flex items-center gap-2 text-[12.5px] font-medium leading-none whitespace-nowrap; background: transparent !important; border: 0 !important; padding: 0 !important; }
+  .chip::before { content: ""; width: 7px; height: 7px; flex-shrink: 0; background: currentColor; border-radius: 1px; }
+  .chip:has(> svg)::before, .chip:has(> span:first-child)::before { display: none; }
   .grid-bg {
     background-image:
       linear-gradient(rgb(148 163 194 / 0.06) 1px, transparent 1px),
