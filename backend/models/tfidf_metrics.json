@@ -1,0 +1,34 @@
+{
+  "engine": "tfidf",
+  "name": "TF-IDF + Logistic Regression",
+  "accuracy": 0.9856767027185034,
+  "precision": 0.9776234567901234,
+  "recall": 0.9844599844599845,
+  "f1": 0.981029810298103,
+  "roc_auc": 0.9987066978632114,
+  "confusion_matrix": [
+    [
+      2105,
+      29
+    ],
+    [
+      20,
+      1267
+    ]
+  ],
+  "false_positives": 29,
+  "false_negatives": 20,
+  "train_size": 13684,
+  "test_size": 3421,
+  "train_seconds": 11.0,
+  "features": 60000,
+  "trained_at": "2026-11-21T06:09:07+00:00",
+  "dataset": {
+    "file": "Phishing_Email.csv",
+    "raw_rows": 18650,
+    "usable_rows": 17105,
+    "duplicates_removed": 982,
+    "phishing": 6433,
+    "legitimate": 10672
+  }
+}
