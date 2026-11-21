@@ -32,35 +32,35 @@
     background-attachment: fixed;
   }
   ::selection { background: rgb(0 229 255 / 0.25); }
-  :focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 2px; border-radius: 6px; }
+  :focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 2px; }
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: var(--color-ink); }
-  ::-webkit-scrollbar-thumb { background: #1e2a40; border-radius: 10px; border: 2px solid var(--color-ink); }
+  ::-webkit-scrollbar-thumb { background: #1e2a40; border-radius: 2px; border: 2px solid var(--color-ink); }
 }
 
 @layer components {
   .panel {
-    @apply min-w-0 rounded-2xl border border-line bg-card/70 backdrop-blur-xl;
+    @apply min-w-0 rounded-[4px] border border-line bg-card/70 backdrop-blur-xl;
     box-shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 20px 50px -25px rgb(0 0 0 / 0.6);
   }
   .panel-hover { @apply transition duration-300 hover:border-line-strong hover:bg-card/90; }
-  .eyebrow { @apply font-mono text-[11px] uppercase tracking-[0.18em] text-cyan; }
+  .eyebrow { @apply inline-flex items-center gap-2.5 text-[13px] font-medium text-cyan; }
+  .eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; }
   .h-display { @apply font-display tracking-tight text-fg; }
   .field {
-    @apply w-full rounded-xl border border-line bg-ink/60 px-4 py-3 text-[15px] text-fg placeholder:text-faint
+    @apply w-full rounded-[3px] border border-line bg-ink/60 px-4 py-3 text-[15px] text-fg placeholder:text-faint
       outline-none transition focus:border-cyan/60 focus:bg-ink/80 focus:ring-4 focus:ring-cyan/10;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition
+    @apply inline-flex items-center justify-center gap-2 rounded-[3px] px-4 py-2.5 text-sm font-medium transition
       disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98];
   }
   .btn-primary {
     @apply bg-cyan text-ink hover:bg-[#5cf0ff];
-    box-shadow: 0 0 0 1px rgb(0 229 255 / 0.5), 0 8px 30px -8px rgb(0 229 255 / 0.55);
   }
   .btn-ghost { @apply border border-line bg-white/[0.02] text-fg hover:border-line-strong hover:bg-white/[0.05]; }
   .btn-quiet { @apply text-dim hover:bg-white/[0.04] hover:text-fg; }
-  .chip { @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider; }
+  .chip { @apply inline-flex items-center gap-1.5 rounded-[2px] border px-2 py-[3px] text-[12px] font-medium whitespace-nowrap; }
   .grid-bg {
     background-image:
       linear-gradient(rgb(148 163 194 / 0.06) 1px, transparent 1px),
@@ -77,10 +77,27 @@
 .animate-scan { animation: scan 2.6s cubic-bezier(.5,0,.5,1) infinite; }
 .animate-spin-slow { animation: spin-slow 24s linear infinite; }
 .animate-pulse-ring { animation: pulse-ring 2.4s ease-out infinite; }
-.skeleton { position: relative; overflow: hidden; background: rgb(148 163 194 / 0.08); border-radius: 8px; }
+.skeleton { position: relative; overflow: hidden; background: rgb(148 163 194 / 0.08); border-radius: 2px; }
 .skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%);
   background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.06), transparent); animation: shimmer 1.4s infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* HUD corner brackets: the sharp, technical signature on key surfaces */
+.ticks { position: relative; }
+.ticks::after {
+  content: ""; position: absolute; inset: -1px; pointer-events: none; z-index: 1;
+  --t: var(--color-cyan); --l: 12px;
+  background:
+    linear-gradient(var(--t), var(--t)) top left / var(--l) 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) top left / 1px var(--l) no-repeat,
+    linear-gradient(var(--t), var(--t)) top right / var(--l) 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) top right / 1px var(--l) no-repeat,
+    linear-gradient(var(--t), var(--t)) bottom left / var(--l) 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) bottom left / 1px var(--l) no-repeat,
+    linear-gradient(var(--t), var(--t)) bottom right / var(--l) 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) bottom right / 1px var(--l) no-repeat;
+  opacity: 0.75;
 }
