@@ -29,7 +29,7 @@ export function ScoreRing({ score, size = 190, label = 'Model score' }: { score:
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <div className="font-display text-5xl font-semibold tabular-nums" style={{ color }}>{v.toFixed(0)}</div>
-        <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-faint">{label} / 100</div>
+        <div className="mt-1 font-mono text-[10px] text-faint">{label} / 100</div>
       </div>
     </div>
   )

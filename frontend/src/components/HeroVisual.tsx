@@ -31,21 +31,21 @@ export function HeroVisual() {
           animate={{ rotate: 360 }} transition={{ duration: 5, repeat: Infinity, ease: 'linear' }} />
         <div className="absolute inset-[42%] rounded-full bg-cyan/10 blur-xl" />
         {[[22, 30], [70, 62], [35, 75]].map(([l, t], i) => (
-          <motion.span key={i} className={`absolute h-2 w-2 rounded-full ${i === 1 ? 'bg-danger shadow-[0_0_14px_#f87171]' : 'bg-cyan shadow-[0_0_12px_#00E5FF]'}`} style={{ left: `${l}%`, top: `${t}%` }}
+          <motion.span key={i} className={`absolute h-2 w-2 rounded-full ${i === 1 ? 'bg-danger' : 'bg-cyan'}`} style={{ left: `${l}%`, top: `${t}%` }}
             animate={{ opacity: [0, 1, 0] }} transition={{ duration: 5, repeat: Infinity, delay: i * 1.6 }} />
         ))}
       </div>
 
       {/* floating email card */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: [0, -8, 0] }} transition={{ opacity: { duration: 0.6, delay: 0.3 }, y: { duration: 6, repeat: Infinity, ease: 'easeInOut' } }}
-        className="panel absolute left-[6%] top-[16%] w-[62%] overflow-hidden bg-deep/80 p-4">
+        className="panel ticks absolute left-[6%] top-[16%] w-[62%] bg-deep/80 p-4">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-16 animate-scan bg-gradient-to-b from-transparent via-cyan/15 to-transparent" />
         <div className="flex items-center gap-2 text-[11px] text-dim"><Mail size={13} className="text-cyan" /><span className="font-mono">security@paypa1-help.xyz</span></div>
         <div className="mt-2 text-[13px] font-medium">Your account has been suspended</div>
         <div className="mt-2 space-y-1.5">
-          <div className="h-1.5 w-full rounded bg-white/[0.07]" /><div className="h-1.5 w-11/12 rounded bg-danger/30" /><div className="h-1.5 w-4/6 rounded bg-white/[0.07]" />
+          <div className="h-1.5 w-full rounded-[2px] bg-white/[0.07]" /><div className="h-1.5 w-11/12 rounded-[2px] bg-danger/30" /><div className="h-1.5 w-4/6 rounded-[2px] bg-white/[0.07]" />
         </div>
-        <div className="mt-3 flex items-center gap-1.5 rounded-md border border-danger/30 bg-danger/10 px-2 py-1 font-mono text-[10px] text-danger"><Link2 size={11} />http://paypa1-help.xyz/verify</div>
+        <div className="mt-3 flex items-center gap-1.5 rounded-[2px] border border-danger/30 bg-danger/10 px-2 py-1 font-mono text-[10px] text-danger"><Link2 size={11} />http://paypa1-help.xyz/verify</div>
       </motion.div>
 
       {/* verdict chip */}

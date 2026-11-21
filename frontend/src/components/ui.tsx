@@ -29,7 +29,7 @@ export const levelStyle: Record<ThreatLevel, { text: string; chip: string; hex: 
 }
 
 export function SevBadge({ s }: { s: Severity }) {
-  return <span className={`chip shrink-0 self-start ${sevStyle[s]}`}>{s}</span>
+  return <span className={`chip shrink-0 self-start capitalize ${sevStyle[s]}`}>{s}</span>
 }
 
 export function DemoBadge({ label = 'Demo data' }: { label?: string }) {
@@ -64,7 +64,7 @@ export function Counter({ value, decimals = 0, suffix = '' }: { value: number; d
 export function EmptyState({ icon, title, body, action }: { icon: ReactNode; title: string; body: string; action?: ReactNode }) {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-      <div className="mb-4 grid h-12 w-12 place-items-center rounded-xl border border-line bg-white/[0.03] text-cyan">{icon}</div>
+      <div className="mb-4 grid h-12 w-12 place-items-center rounded-[3px] border border-line bg-white/[0.03] text-cyan">{icon}</div>
       <div className="font-display text-lg font-medium">{title}</div>
       <p className="mt-1.5 max-w-sm text-sm text-dim">{body}</p>
       {action && <div className="mt-5">{action}</div>}
@@ -85,7 +85,7 @@ export function Modal({ open, onClose, title, children, wide }: { open: boolean;
       {open && (
         <motion.div className="fixed inset-0 z-[60] flex items-end justify-center p-0 sm:items-center sm:p-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <div className="absolute inset-0 bg-ink/80 backdrop-blur-sm" onClick={onClose} />
-          <motion.div role="dialog" aria-modal className={`panel relative max-h-[88vh] w-full overflow-hidden rounded-b-none sm:rounded-2xl ${wide ? 'sm:max-w-4xl' : 'sm:max-w-lg'} bg-deep`}
+          <motion.div role="dialog" aria-modal className={`panel relative max-h-[88vh] w-full overflow-hidden rounded-b-none sm:rounded-[4px] ${wide ? 'sm:max-w-4xl' : 'sm:max-w-lg'} bg-deep`}
             initial={{ y: 30, opacity: 0, scale: 0.98 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 20, opacity: 0 }} transition={{ type: 'spring', damping: 28, stiffness: 320 }}>
             <div className="flex items-center justify-between border-b border-line px-5 py-4">
               <div className="font-display text-base font-medium">{title}</div>
@@ -122,7 +122,7 @@ export function Tip({ text, children }: { text: string; children: ReactNode }) {
   return (
     <span className="group relative inline-flex">
       {children}
-      <span role="tooltip" className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[240px] -translate-x-1/2 rounded-lg border border-line bg-deep px-2.5 py-1.5 text-xs leading-snug text-dim opacity-0 shadow-xl transition group-hover:opacity-100 group-focus-within:opacity-100">{text}</span>
+      <span role="tooltip" className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[240px] -translate-x-1/2 rounded-[2px] border border-line bg-deep px-2.5 py-1.5 text-xs leading-snug text-dim opacity-0 shadow-xl transition group-hover:opacity-100 group-focus-within:opacity-100">{text}</span>
     </span>
   )
 }
@@ -130,12 +130,12 @@ export function Tip({ text, children }: { text: string; children: ReactNode }) {
 export function BackendPill() {
   const { backend, engine } = useApp()
   const bert = engine('bert')
-  if (backend === 'checking') return <span className="chip border-line text-dim"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-dim" />Connecting</span>
-  if (backend === 'offline') return <Tip text="The Python backend isn't reachable. Analyses use a labelled browser heuristic."><span className="chip border-warn/40 bg-warn/10 text-warn"><span className="h-1.5 w-1.5 rounded-full bg-warn" />Demo mode</span></Tip>
+  if (backend === 'checking') return <span className="chip border-line text-dim"><span className="h-1.5 w-1.5 animate-pulse rounded-[1px] bg-dim" />Connecting</span>
+  if (backend === 'offline') return <Tip text="The Python backend isn't reachable. Analyses use a labelled browser heuristic."><span className="chip border-warn/40 bg-warn/10 text-warn"><span className="h-1.5 w-1.5 rounded-[1px] bg-warn" />Demo mode</span></Tip>
   const busy = bert && (bert.status === 'loading' || bert.status === 'training')
   return (
     <Tip text={busy ? 'TF-IDF model live. BERT engine is preparing in the background.' : 'Connected to the trained machine-learning backend.'}>
-      <span className="chip border-safe/40 bg-safe/10 text-safe"><span className="relative h-1.5 w-1.5 rounded-full bg-safe"><span className="absolute inset-0 animate-pulse-ring rounded-full bg-safe" /></span>Model live</span>
+      <span className="chip border-safe/40 bg-safe/10 text-safe"><span className="relative h-1.5 w-1.5 rounded-[1px] bg-safe"><span className="absolute inset-0 animate-pulse-ring rounded-[1px] bg-safe" /></span>Model live</span>
     </Tip>
   )
 }

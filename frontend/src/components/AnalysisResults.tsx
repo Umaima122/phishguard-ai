@@ -13,7 +13,7 @@ function Card({ i, icon, title, count, children, className = '' }: { i: number; 
   return (
     <motion.section custom={i} variants={fade} initial="hidden" animate="show" className={`panel p-5 md:p-6 ${className}`}>
       <div className="mb-4 flex items-center gap-2.5">
-        <span className="grid h-8 w-8 place-items-center rounded-lg border border-line bg-white/[0.03] text-cyan">{icon}</span>
+        <span className="grid h-8 w-8 place-items-center rounded-[2px] border border-line bg-white/[0.03] text-cyan">{icon}</span>
         <h3 className="font-display text-[15px] font-medium">{title}</h3>
         {count !== undefined && <span className="ml-auto font-mono text-xs text-faint">{count}</span>}
       </div>
@@ -25,7 +25,7 @@ function Card({ i, icon, title, count, children, className = '' }: { i: number; 
 function Expandable({ head, children, defaultOpen = false }: { head: ReactNode; children: ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="rounded-xl border border-line bg-ink/40 transition hover:border-line-strong">
+    <div className="rounded-[3px] border border-line bg-ink/40 transition hover:border-line-strong">
       <button className="flex w-full items-center gap-3 px-4 py-3 text-left" onClick={() => setOpen(o => !o)} aria-expanded={open}>
         <div className="min-w-0 flex-1">{head}</div>
         <ChevronDown size={16} className={`shrink-0 text-faint transition ${open ? 'rotate-180' : ''}`} />
@@ -86,8 +86,7 @@ export function AnalysisResults({ r, meta, onReset }: { r: AnalysisResult; meta:
   return (
     <div className="space-y-5">
       {/* Verdict */}
-      <motion.section custom={0} variants={fade} initial="hidden" animate="show" className="panel relative overflow-hidden p-6 md:p-8">
-        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full blur-3xl" style={{ background: `${scoreColor(r.score)}22` }} />
+      <motion.section custom={0} variants={fade} initial="hidden" animate="show" className="panel ticks relative p-6 md:p-8">
         <div className="relative flex flex-col items-center gap-8 md:flex-row md:items-center">
           <ScoreRing score={r.score} />
           <div className="flex-1 text-center md:text-left">
@@ -117,11 +116,11 @@ export function AnalysisResults({ r, meta, onReset }: { r: AnalysisResult; meta:
         <Card i={1} icon={<Scale size={16} />} title="Model comparison">
           <div className="grid gap-4 sm:grid-cols-2">
             {r.comparison.map(c => (
-              <div key={c.engine} className="rounded-xl border border-line bg-ink/40 p-4">
+              <div key={c.engine} className="rounded-[3px] border border-line bg-ink/40 p-4">
                 <div className="text-sm text-dim">{c.name}</div>
                 {c.score == null ? <div className="mt-2 text-sm text-warn">Engine {c.status}. Try again shortly.</div> : (<>
                   <div className="mt-1 flex items-baseline justify-between"><span className="font-display text-2xl font-semibold" style={{ color: scoreColor(c.score) }}>{c.score.toFixed(1)}</span><span className="text-xs text-dim">{c.classification}</span></div>
-                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.06]"><motion.div className="h-full rounded-full" style={{ background: scoreColor(c.score) }} initial={{ width: 0 }} animate={{ width: `${c.score}%` }} transition={{ duration: 1 }} /></div>
+                  <div className="mt-3 h-1.5 overflow-hidden rounded-[1px] bg-white/[0.06]"><motion.div className="h-full rounded-[1px]" style={{ background: scoreColor(c.score) }} initial={{ width: 0 }} animate={{ width: `${c.score}%` }} transition={{ duration: 1 }} /></div>
                 </>)}
               </div>
             ))}
@@ -137,12 +136,12 @@ export function AnalysisResults({ r, meta, onReset }: { r: AnalysisResult; meta:
             <div className="mt-5 grid gap-6 md:grid-cols-2">
               {[{ t: 'Pushed toward phishing', items: up, c: 'bg-danger' }, { t: 'Pushed toward legitimate', items: down, c: 'bg-safe' }].map(g => g.items.length > 0 && (
                 <div key={g.t}>
-                  <div className="mb-2 font-mono text-[11px] uppercase tracking-wider text-faint">{g.t}</div>
+                  <div className="mb-2 font-mono text-[11px] text-faint">{g.t}</div>
                   <ul className="space-y-1.5">
                     {g.items.map(t => (
                       <li key={t.term} className="grid grid-cols-[minmax(0,9rem)_1fr] items-center gap-3 text-[13px]">
                         <span className="truncate font-mono text-dim">{t.term}</span>
-                        <div className="h-1.5 rounded-full bg-white/[0.05]"><motion.div className={`h-full rounded-full ${g.c}`} initial={{ width: 0 }} animate={{ width: `${(Math.abs(t.weight) / maxW) * 100}%` }} transition={{ duration: 0.8 }} /></div>
+                        <div className="h-1.5 rounded-[1px] bg-white/[0.05]"><motion.div className={`h-full rounded-[1px] ${g.c}`} initial={{ width: 0 }} animate={{ width: `${(Math.abs(t.weight) / maxW) * 100}%` }} transition={{ duration: 0.8 }} /></div>
                       </li>
                     ))}
                   </ul>
@@ -156,9 +155,9 @@ export function AnalysisResults({ r, meta, onReset }: { r: AnalysisResult; meta:
           {r.warnings.length === 0 ? <div className="flex items-center gap-2 text-sm text-dim"><CircleCheck size={16} className="text-safe" />No rule-based warning signs detected.</div> : (
             <div className="space-y-2">
               {r.warnings.map(w => (
-                <Expandable key={w.id} head={<div className="flex items-center gap-3"><SevBadge s={w.severity} /><span className="text-sm text-fg">{w.title}</span><span className="ml-auto hidden font-mono text-[10px] uppercase text-faint sm:inline">{w.category}</span></div>}>
+                <Expandable key={w.id} head={<div className="flex items-center gap-3"><SevBadge s={w.severity} /><span className="text-sm text-fg">{w.title}</span><span className="ml-auto hidden font-mono text-[10px] text-faint sm:inline">{w.category}</span></div>}>
                   <div className="mb-1.5 text-xs text-faint">Matched in the email:</div>
-                  <div className="flex flex-wrap gap-1.5">{w.evidence.map(e => <span key={e} className={`rounded-md border px-2 py-0.5 font-mono text-xs ${sevStyle[w.severity]}`}>“{e}”</span>)}</div>
+                  <div className="flex flex-wrap gap-1.5">{w.evidence.map(e => <span key={e} className={`rounded-[2px] border px-2 py-0.5 font-mono text-xs ${sevStyle[w.severity]}`}>“{e}”</span>)}</div>
                 </Expandable>
               ))}
             </div>
@@ -174,7 +173,7 @@ export function AnalysisResults({ r, meta, onReset }: { r: AnalysisResult; meta:
 
         <Card i={5} icon={<AtSign size={16} />} title="Sender analysis">
           {!r.sender ? <p className="text-sm text-dim">No sender provided. Add the sender address for impersonation checks.</p> : (<>
-            <div className="mb-4 rounded-xl border border-line bg-ink/40 px-4 py-3 font-mono text-[13px]">
+            <div className="mb-4 rounded-[3px] border border-line bg-ink/40 px-4 py-3 font-mono text-[13px]">
               {r.sender.display_name && <span className="text-dim">{r.sender.display_name} </span>}<span className="text-fg">&lt;{r.sender.address}&gt;</span>
             </div>
             <IndicatorList items={r.sender.indicators} />
