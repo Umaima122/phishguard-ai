@@ -67,7 +67,7 @@ export default function HistoryPage() {
           : rows.length === 0 ? <EmptyState icon={<HistoryIcon size={22} />} title={q || cls || level ? 'No matches' : 'No saved analyses'} body={q || cls || level ? 'Try a different search or filter.' : 'Turn on “Save result to history” in the analyzer to keep a record here.'} action={<Link to="/analyze" className="btn btn-primary">Analyze an email</Link>} />
           : (<>
             <table className="hidden w-full text-sm md:table">
-              <thead><tr className="border-b border-line text-left font-mono text-[10px] uppercase tracking-wider text-faint">
+              <thead><tr className="border-b border-line text-left font-mono text-[10px] text-faint">
                 <th className="px-5 py-3 font-normal">Date</th><th className="px-3 py-3 font-normal">Email</th><th className="px-3 py-3 font-normal">Classification</th><th className="px-3 py-3 font-normal">Score</th><th className="px-3 py-3 font-normal">Level</th><th className="px-5 py-3" />
               </tr></thead>
               <tbody>
@@ -89,7 +89,7 @@ export default function HistoryPage() {
             <ul className="divide-y divide-line md:hidden">
               {rows.map(h => (
                 <li key={h.id}><button className="flex w-full items-start gap-3 p-4 text-left" onClick={() => void open(h)}>
-                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{ background: levelStyle[h.threat_level].hex }} />
+                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-[1px]" style={{ background: levelStyle[h.threat_level].hex }} />
                   <div className="min-w-0 flex-1"><div className="truncate text-sm">{h.subject || '(no subject)'}</div><div className="mt-0.5 font-mono text-[11px] text-faint">{new Date(h.created_at).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })} · {h.threat_level}</div></div>
                   <span className={`font-mono text-sm ${h.classification === 'Potential Phishing' ? 'text-danger' : 'text-safe'}`}>{h.score.toFixed(0)}</span>
                 </button></li>
@@ -103,9 +103,9 @@ export default function HistoryPage() {
           <div className="space-y-4 text-sm">
             <DemoBadge label="Demo record" />
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {[['Classification', detail.classification], ['Score', detail.score.toFixed(1)], ['Threat level', detail.threat_level], ['Warnings', String(detail.warning_count)]].map(([k, v]) => <div key={k} className="rounded-xl border border-line bg-ink/40 p-3"><div className="text-xs text-faint">{k}</div><div className="mt-1">{v}</div></div>)}
+              {[['Classification', detail.classification], ['Score', detail.score.toFixed(1)], ['Threat level', detail.threat_level], ['Warnings', String(detail.warning_count)]].map(([k, v]) => <div key={k} className="rounded-[3px] border border-line bg-ink/40 p-3"><div className="text-xs text-faint">{k}</div><div className="mt-1">{v}</div></div>)}
             </div>
-            <div className="rounded-xl border border-line bg-ink/40 p-4"><div className="font-mono text-xs text-faint">{detail.sender}</div><p className="mt-2 text-dim">{detail.preview}</p></div>
+            <div className="rounded-[3px] border border-line bg-ink/40 p-4"><div className="font-mono text-xs text-faint">{detail.sender}</div><p className="mt-2 text-dim">{detail.preview}</p></div>
             <p className="text-xs text-faint">Demo records carry a summary only. Real saved analyses open the full report here.</p>
           </div>
         )}

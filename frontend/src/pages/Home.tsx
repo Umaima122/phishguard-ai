@@ -46,11 +46,11 @@ export default function Home() {
         <div className="pointer-events-none absolute inset-0 grid-bg" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 pb-16 pt-14 md:pt-20 lg:grid-cols-[1.05fr_1fr] lg:px-8 lg:pb-24">
           <div>
-            <motion.div variants={up} initial="hidden" animate="show" className="inline-flex items-center gap-2 rounded-full border border-line bg-white/[0.03] px-3 py-1.5 text-xs text-dim">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan shadow-[0_0_10px_#00E5FF]" />Think Before You Click. Let AI Investigate.
+            <motion.div variants={up} initial="hidden" animate="show" className="inline-flex items-center gap-2 rounded-[1px] border border-line bg-white/[0.03] px-3 py-1.5 text-xs text-dim">
+              <span className="h-1.5 w-1.5 rounded-[1px] bg-cyan" />Think Before You Click. Let AI Investigate.
             </motion.div>
             <motion.h1 variants={up} custom={1} initial="hidden" animate="show" className="h-display mt-6 text-[2.75rem] font-semibold leading-[1.02] sm:text-6xl lg:text-[4.25rem]">
-              Your Inbox.<br /><span className="bg-gradient-to-r from-cyan via-[#7dd3fc] to-violet bg-clip-text text-transparent">Under AI Protection.</span>
+              Your Inbox.<br /><span className="text-cyan">Under AI Protection.</span>
             </motion.h1>
             <motion.p variants={up} custom={2} initial="hidden" animate="show" className="mt-6 max-w-xl text-lg leading-relaxed text-dim">
               Detect phishing attempts, uncover suspicious links, and understand digital threats before they reach you.
@@ -59,7 +59,7 @@ export default function Home() {
               <Link to="/analyze" className="btn btn-primary !px-5 !py-3 text-[15px]"><ScanSearch size={18} />Analyze an Email</Link>
               <a href="#platform" className="btn btn-ghost !px-5 !py-3 text-[15px]">Explore Platform<ArrowRight size={16} /></a>
             </motion.div>
-            <motion.div variants={up} custom={4} initial="hidden" animate="show" className="mt-10 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-wider text-faint">
+            <motion.div variants={up} custom={4} initial="hidden" animate="show" className="mt-10 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[11px] text-faint">
               <span>scikit-learn</span><span>Sentence-BERT</span><span>FastAPI</span><span>No links opened</span>
             </motion.div>
           </div>
@@ -75,7 +75,7 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {cards.map((c, i) => (
-            <motion.div key={c.label} variants={up} custom={i} initial="hidden" whileInView="show" viewport={{ once: true }} className="panel panel-hover p-5">
+            <motion.div key={c.label} variants={up} custom={i} initial="hidden" whileInView="show" viewport={{ once: true }} className="panel panel-hover ticks p-5">
               <div className="text-[13px] text-dim">{c.label}</div>
               <div className="h-display mt-3 text-3xl font-semibold tabular-nums md:text-4xl">
                 {'na' in c && c.na ? <span className="text-faint">—</span> : <Counter value={c.value} decimals={'dec' in c ? c.dec : 0} suffix={'suffix' in c ? c.suffix : ''} />}
@@ -96,7 +96,7 @@ export default function Home() {
         <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f, i) => (
             <motion.div key={f.title} variants={up} custom={i % 3} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }} className="panel panel-hover group p-6">
-              <div className="grid h-10 w-10 place-items-center rounded-xl border border-line bg-gradient-to-br from-cyan/15 to-violet/15 text-cyan transition group-hover:shadow-[0_0_24px_-4px_#00E5FF]"><f.icon size={19} /></div>
+              <div className="grid h-10 w-10 place-items-center rounded-[3px] border border-line bg-cyan/[0.06] text-cyan transition group-hover:"><f.icon size={19} /></div>
               <div className="mt-5 font-display text-lg font-medium">{f.title}</div>
               <p className="mt-2 text-sm leading-relaxed text-dim">{f.body}</p>
             </motion.div>
@@ -107,8 +107,6 @@ export default function Home() {
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-5 pt-24 lg:px-8">
         <div className="panel relative overflow-hidden p-8 md:p-12">
-          <div className="pointer-events-none absolute -right-20 -top-28 h-80 w-80 rounded-full bg-violet/20 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-32 left-10 h-72 w-72 rounded-full bg-cyan/10 blur-3xl" />
           <div className="relative flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
             <div className="max-w-xl">
               <h2 className="h-display text-3xl font-semibold">Got a suspicious email right now?</h2>

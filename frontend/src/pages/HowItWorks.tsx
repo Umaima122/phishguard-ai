@@ -20,7 +20,7 @@ export default function HowItWorks() {
     ['Features', 'Word & bigram frequencies (TF-IDF, 60k terms)', 'Sentence embeddings (all-MiniLM-L6-v2, 384 dims)'],
     ['Understands', 'Which words appear', 'What the text means'],
     ['Explainability', 'Per-word contribution to the score', 'Score only'],
-    ['Speed', 'Instant, ships pre-trained', 'Slower; trains on first boot'],
+    ['Speed', 'Instant, ships pre-trained', 'Slower; trained once during deploy'],
     ['Test accuracy', t ? `${(t.accuracy * 100).toFixed(2)}%` : backend === 'online' ? '—' : 'Connect backend', b ? `${(b.accuracy * 100).toFixed(2)}%` : '—'],
     ['Test F1', t ? `${(t.f1 * 100).toFixed(2)}%` : '—', b ? `${(b.f1 * 100).toFixed(2)}%` : '—'],
   ]
@@ -29,12 +29,12 @@ export default function HowItWorks() {
       <SectionHeader eyebrow="How it works" title="From raw email to explained verdict" sub="PhishGuard combines a trained machine-learning classifier with transparent rule-based checks, so you see the decision and the reasons behind it." />
 
       <div className="relative">
-        <div className="absolute left-[19px] top-6 bottom-6 w-px bg-gradient-to-b from-cyan/60 via-violet/50 to-transparent md:hidden" />
+        <div className="absolute left-[19px] top-6 bottom-6 w-px bg-cyan/30 md:hidden" />
         <div className="grid gap-3 md:grid-cols-6">
           {STEPS.map((s, i) => (
             <motion.div key={s.t} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }} className="relative flex gap-4 md:flex-col md:gap-0">
-              <div className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-cyan/30 bg-deep text-cyan shadow-[0_0_20px_-6px_#00E5FF]"><s.icon size={18} /></div>
-              {i < STEPS.length - 1 && <motion.div className="absolute left-12 top-5 hidden h-px bg-gradient-to-r from-cyan/50 to-violet/40 md:block" style={{ right: '-0.75rem' }} initial={{ scaleX: 0, originX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 + 0.3, duration: 0.5 }} />}
+              <div className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-[3px] border border-cyan/30 bg-deep text-cyan"><s.icon size={18} /></div>
+              {i < STEPS.length - 1 && <motion.div className="absolute left-12 top-5 hidden h-px bg-cyan/30 md:block" style={{ right: '-0.75rem' }} initial={{ scaleX: 0, originX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 + 0.3, duration: 0.5 }} />}
               <div className="pb-4 md:pt-4"><div className="font-mono text-[10px] text-faint">0{i + 1}</div><div className="mt-1 text-sm font-medium">{s.t}</div><div className="mt-1 text-[13px] leading-relaxed text-dim">{s.d}</div></div>
             </motion.div>
           ))}
@@ -62,7 +62,7 @@ export default function HowItWorks() {
 
       <div className="panel mt-5 p-5">
         <div className="mb-4 font-display text-[15px] font-medium">Tech stack</div>
-        <div className="flex flex-wrap gap-2">{['Python', 'scikit-learn', 'TF-IDF', 'Logistic Regression', 'sentence-transformers', 'FastAPI', 'SQLite', 'React', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Recharts', 'Docker', 'Hugging Face Spaces'].map(s => <span key={s} className="rounded-lg border border-line bg-white/[0.02] px-3 py-1.5 font-mono text-xs text-dim">{s}</span>)}</div>
+        <div className="flex flex-wrap gap-2">{['Python', 'scikit-learn', 'TF-IDF', 'Logistic Regression', 'sentence-transformers', 'FastAPI', 'SQLite', 'React', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Recharts', 'Docker', 'Hugging Face Spaces'].map(s => <span key={s} className="rounded-[2px] border border-line bg-white/[0.02] px-3 py-1.5 font-mono text-xs text-dim">{s}</span>)}</div>
       </div>
 
       <div className="mt-10 flex justify-center"><Link to="/analyze" className="btn btn-primary !px-5 !py-3">See it on a real email<ArrowRight size={16} /></Link></div>
