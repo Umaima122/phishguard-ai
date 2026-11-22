@@ -5,7 +5,7 @@
 **Think Before You Click. Let AI Investigate.**
 An AI-powered phishing email detection and cybersecurity awareness platform.
 
-Developed by Umaima Qureshi.
+Built by **Team RageQuit**. © 2026 RageQuit. All rights reserved.
 
 ## What it does
 
