@@ -10,35 +10,96 @@ const store = {
   set: (k: string, v: string) => { try { localStorage.setItem(k, v) } catch { /* storage unavailable */ } },
 }
 
+const FLAG = /(immediately|permanently closed|unless you verify|paypa1|hbl-secure-login\.top|\.top|\.xyz|@gmail\.com|6-digit code|login and|Invoice_\d+\.html|\.html)/gi
+
+function Highlight({ text }: { text: string }) {
+  const parts = text.split(FLAG)
+  return <>{parts.map((p, i) => i % 2 === 1 ? <mark key={i} className="bg-transparent text-fg underline decoration-danger decoration-wavy decoration-[1.5px] underline-offset-[5px]">{p}</mark> : <span key={i}>{p}</span>)}</>
+}
+
 function Lessons() {
-  const [active, setActive] = useState(lessons[0].id)
+  const [active, setActive] = useState(0)
   const [read, setRead] = useState<Set<string>>(() => new Set(JSON.parse(store.get('pg-read') || '[]') as string[]))
-  useEffect(() => { setRead(r => { const n = new Set(r).add(active); store.set('pg-read', JSON.stringify([...n])); return n }) }, [active])
-  const l = lessons.find(x => x.id === active)!
+  const l = lessons[active]
+  useEffect(() => { setRead(r => { const n = new Set(r).add(l.id); store.set('pg-read', JSON.stringify([...n])); return n }) }, [l.id])
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement)?.closest('input,textarea')) return
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') setActive(a => Math.min(lessons.length - 1, a + 1))
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') setActive(a => Math.max(0, a - 1))
+    }
+    window.addEventListener('keydown', k)
+    return () => window.removeEventListener('keydown', k)
+  }, [])
+  const progress = lessons.length > 1 ? active / (lessons.length - 1) : 1
+
   return (
-    <div className="grid gap-5 lg:grid-cols-[300px_1fr]">
-      <div className="panel p-2">
-        <div className="flex items-center justify-between px-3 py-2 text-xs text-dim"><span>Lessons</span><span className="font-mono">{read.size}/{lessons.length} read</span></div>
-        <div className="mx-3 mb-2 h-1 rounded-[1px] bg-white/[0.06]"><motion.div className="h-full rounded-[1px] bg-cyan" animate={{ width: `${(read.size / lessons.length) * 100}%` }} /></div>
-        <div className="flex gap-1 overflow-x-auto lg:flex-col">
-          {lessons.map((x, i) => (
-            <button key={x.id} onClick={() => setActive(x.id)} className={`relative flex shrink-0 items-center gap-3 rounded-[3px] px-3 py-2.5 text-left text-sm transition ${active === x.id ? 'text-fg' : 'text-dim hover:text-fg'}`}>
-              {active === x.id && <motion.span layoutId="lesson" className="absolute inset-0 rounded-[3px] bg-white/[0.06]" />}
-              <span className="relative font-mono text-[11px] text-cyan">0{i + 1}</span><span className="relative whitespace-nowrap">{x.title}</span>
-              {read.has(x.id) && <CircleCheck size={14} className="relative ml-auto hidden text-safe lg:block" />}
-            </button>
-          ))}
+    <div className="grid gap-10 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-16">
+      {/* Timeline */}
+      <nav aria-label="Lessons" className="relative">
+        <div className="mb-5 flex items-baseline justify-between text-[13px]">
+          <span className="text-dim">Your path</span>
+          <span className="font-mono text-[12px] text-faint">{read.size} of {lessons.length} explored</span>
         </div>
-      </div>
+        <div className="relative">
+          <span className="absolute top-3 bottom-3 left-[7px] w-px bg-white/[0.08]" />
+          <motion.span className="absolute top-3 left-[7px] w-px origin-top bg-cyan" style={{ height: 'calc(100% - 24px)' }} initial={false} animate={{ scaleY: progress }} transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }} />
+          <ol className="relative space-y-1">
+            {lessons.map((x, i) => {
+              const isActive = i === active, done = read.has(x.id) && !isActive
+              return (
+                <li key={x.id}>
+                  <button onClick={() => setActive(i)} className="group flex w-full items-center gap-4 py-2.5 text-left">
+                    <span className="relative grid h-[15px] w-[15px] shrink-0 place-items-center">
+                      <motion.span className="absolute inset-0 rounded-[2px] border" initial={false}
+                        animate={{ borderColor: isActive ? '#00E5FF' : i <= active ? 'rgba(0,229,255,0.5)' : 'rgba(148,163,194,0.25)', backgroundColor: isActive ? 'rgba(0,229,255,0.15)' : '#070B14', scale: isActive ? 1.15 : 1 }} />
+                      {(isActive || i < active) && <motion.span layoutId={isActive ? 'lesson-dot' : undefined} className="relative h-[5px] w-[5px] bg-cyan" />}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block font-mono text-[11.5px] text-faint">Lesson {String(i + 1).padStart(2, '0')}{done && <span className="ml-2 text-safe/80">read</span>}</span>
+                      <span className={`block text-[14.5px] transition-colors ${isActive ? 'text-fg' : 'text-dim group-hover:text-fg'}`}>{x.title}</span>
+                    </span>
+                  </button>
+                </li>
+              )
+            })}
+          </ol>
+        </div>
+      </nav>
+
+      {/* Lesson body */}
       <AnimatePresence mode="wait">
-        <motion.div key={l.id} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} className="panel p-6 md:p-8">
-          <div className="eyebrow">Lesson {lessons.indexOf(l) + 1}</div>
-          <h3 className="h-display mt-2 text-2xl font-semibold">{l.title}</h3>
-          <p className="mt-2 text-dim">{l.summary}</p>
-          <ul className="mt-6 space-y-3">{l.points.map(p => <li key={p} className="flex gap-3 text-[15px]"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-[1px] bg-cyan" />{p}</li>)}</ul>
-          <div className="mt-6 rounded-[3px] border border-danger/25 bg-danger/[0.06] p-4"><div className="font-mono text-[10px] text-danger">Example red flag</div><div className="mt-1.5 font-mono text-[13px] text-fg/90">{l.example}</div></div>
-          {lessons.indexOf(l) < lessons.length - 1 && <button className="btn btn-ghost mt-6" onClick={() => setActive(lessons[lessons.indexOf(l) + 1].id)}>Next lesson<ArrowRight size={15} /></button>}
-        </motion.div>
+        <motion.article key={l.id} className="min-w-0 max-w-[680px]"
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}>
+          <div className="font-mono text-[12px] text-cyan">{String(active + 1).padStart(2, '0')} / {String(lessons.length).padStart(2, '0')}</div>
+          <h3 className="mt-2 font-display text-[30px] leading-tight font-medium tracking-tight md:text-[34px]">{l.title}</h3>
+          <p className="mt-3 text-[16px] leading-relaxed text-dim">{l.summary}</p>
+
+          <ul className="mt-8">
+            {l.points.map((p, n) => (
+              <motion.li key={p} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.12 + n * 0.07 }}
+                className="grid grid-cols-[2.25rem_1fr] border-t border-white/[0.06] py-3.5 text-[15px] leading-relaxed text-fg/90 last:border-b">
+                <span className="pt-0.5 font-mono text-[12px] text-faint">{String(n + 1).padStart(2, '0')}</span>{p}
+              </motion.li>
+            ))}
+          </ul>
+
+          <motion.figure initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mt-8">
+            <figcaption className="mb-2.5 text-[12.5px] text-faint">What it looks like in an inbox</figcaption>
+            <div className="border-l-2 border-danger/70 bg-white/[0.025] py-4 pr-5 pl-5">
+              <div className="flex items-center gap-2 text-[12px] text-faint"><span className="h-[6px] w-[6px] bg-danger" />Suspicious message</div>
+              <p className="mt-2 text-[15px] leading-relaxed text-dim"><Highlight text={l.example} /></p>
+            </div>
+          </motion.figure>
+
+          <div className="mt-9 flex items-center gap-3">
+            <button className="btn btn-ghost" disabled={active === 0} onClick={() => setActive(a => a - 1)}>Previous</button>
+            {active < lessons.length - 1
+              ? <button className="btn btn-primary" onClick={() => setActive(a => a + 1)}>Next lesson<ArrowRight size={15} /></button>
+              : <a href="#quiz" className="btn btn-primary">Take the quiz<ArrowRight size={15} /></a>}
+            <span className="ml-auto hidden font-mono text-[11.5px] text-faint sm:inline">Use arrow keys to move</span>
+          </div>
+        </motion.article>
       </AnimatePresence>
     </div>
   )
@@ -78,7 +139,7 @@ function Quiz() {
             </motion.div>
           ) : (
             <motion.div key={q.id} initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }}>
-              <div className="rounded-[3px] border border-line bg-ink/40 p-4 text-[15px] leading-relaxed text-fg/90">{q.scenario}</div>
+              <p className="border-l-2 border-cyan/60 py-1 pl-4 text-[16px] leading-relaxed text-fg/90">{q.scenario}</p>
               <h3 className="h-display mt-5 text-xl font-medium">{q.question}</h3>
               <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
                 {q.options.map((o, n) => {

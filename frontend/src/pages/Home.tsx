@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight, AtSign, Brain, FileText, GraduationCap, LayoutDashboard, Link2, ScanSearch, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { FeatureCarousel } from '../components/FeatureCarousel'
 import { HeroVisual } from '../components/HeroVisual'
 import { Counter, DemoBadge } from '../components/ui'
 import { demoStats } from '../data/demoData'
@@ -12,12 +13,12 @@ import type { Stats } from '../lib/types'
 const up = { hidden: { opacity: 0, y: 18 }, show: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } }) }
 
 const FEATURES = [
-  { icon: Brain, title: 'Two ML engines', body: 'A TF-IDF + Logistic Regression baseline and a Sentence-BERT semantic model, trained on the same split so you can compare them.' },
-  { icon: Sparkles, title: 'Explains its verdict', body: 'See the exact words that pushed the score up or down, plus the rule checks that fired.' },
-  { icon: Link2, title: 'Static link inspection', body: 'Look-alike domains, raw IP hosts, punycode, shorteners and risky TLDs. Links are never opened.' },
-  { icon: AtSign, title: 'Sender analysis', body: 'Catches brands on free webmail, look-alike domains and mismatches between sender and link domains.' },
-  { icon: FileText, title: 'Downloadable reports', body: 'Export a clean, printable security report for any analysis.' },
-  { icon: GraduationCap, title: 'Awareness training', body: 'Short lessons and a scored quiz built around realistic scenarios.' },
+  { icon: Brain, title: 'Two ML engines', tags: ['TF-IDF', 'Sentence-BERT', 'Compare mode'], body: 'A TF-IDF + Logistic Regression baseline and a Sentence-BERT semantic model, trained on the same split so you can compare them.' },
+  { icon: Sparkles, title: 'Explains its verdict', tags: ['Word weights', 'Rule checks', 'Plain language'], body: 'See the exact words that pushed the score up or down, plus the rule checks that fired.' },
+  { icon: Link2, title: 'Static link inspection', tags: ['Punycode', 'IP hosts', 'Look-alikes'], body: 'Look-alike domains, raw IP hosts, punycode, shorteners and risky TLDs. Links are never opened.' },
+  { icon: AtSign, title: 'Sender analysis', tags: ['Free webmail', 'Brand spoofing', 'Domain mismatch'], body: 'Catches brands on free webmail, look-alike domains and mismatches between sender and link domains.' },
+  { icon: FileText, title: 'Downloadable reports', tags: ['HTML report', 'Print to PDF'], body: 'Export a clean, printable security report for any analysis.' },
+  { icon: GraduationCap, title: 'Awareness training', tags: ['5 lessons', 'Scored quiz'], body: 'Short lessons and a scored quiz built around realistic scenarios.' },
 ]
 
 export default function Home() {
@@ -46,10 +47,8 @@ export default function Home() {
         <div className="pointer-events-none absolute inset-0 grid-bg" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 pb-16 pt-14 md:pt-20 lg:grid-cols-[1.05fr_1fr] lg:px-8 lg:pb-24">
           <div>
-            <motion.div variants={up} initial="hidden" animate="show" className="inline-flex items-center gap-2 rounded-[1px] border border-line bg-white/[0.03] px-3 py-1.5 text-xs text-dim">
-              <span className="h-1.5 w-1.5 rounded-[1px] bg-cyan" />Think Before You Click. Let AI Investigate.
-            </motion.div>
-            <motion.h1 variants={up} custom={1} initial="hidden" animate="show" className="h-display mt-6 text-[2.75rem] font-semibold leading-[1.02] sm:text-6xl lg:text-[4.25rem]">
+            
+            <motion.h1 variants={up} custom={1} initial="hidden" animate="show" className="h-display text-[2.75rem] font-semibold leading-[1.02] sm:text-6xl lg:text-[4.25rem]">
               Your Inbox.<br /><span className="text-cyan">Under AI Protection.</span>
             </motion.h1>
             <motion.p variants={up} custom={2} initial="hidden" animate="show" className="mt-6 max-w-xl text-lg leading-relaxed text-dim">
@@ -93,15 +92,7 @@ export default function Home() {
           <h2 className="h-display text-3xl font-semibold md:text-4xl">A threat-intelligence workflow for every inbox.</h2>
           <p className="mt-4 text-dim">Machine learning gives the verdict. Rule checks, link inspection and sender analysis explain it.</p>
         </div>
-        <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f, i) => (
-            <motion.div key={f.title} variants={up} custom={i % 3} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }} className="panel panel-hover group p-6">
-              <div className="grid h-10 w-10 place-items-center rounded-[3px] border border-line bg-cyan/[0.06] text-cyan transition group-hover:"><f.icon size={19} /></div>
-              <div className="mt-5 font-display text-lg font-medium">{f.title}</div>
-              <p className="mt-2 text-sm leading-relaxed text-dim">{f.body}</p>
-            </motion.div>
-          ))}
-        </div>
+        <div className="mt-10"><FeatureCarousel items={FEATURES} /></div>
       </section>
 
       {/* CTA */}
