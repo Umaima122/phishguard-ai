@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
+import { SoundToggle } from './SoundToggle'
 import { Logo } from './ui'
 
 export const NAV = [
@@ -42,6 +43,7 @@ export function Navbar() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-3 lg:ml-0">
+          <div className="hidden sm:block"><SoundToggle /></div>
           <Link to="/analyze" className="btn btn-primary hidden !py-2 md:inline-flex">Get Started</Link>
           <button className="btn btn-ghost !p-2 lg:hidden" onClick={() => setOpen(o => !o)} aria-label="Menu" aria-expanded={open}>
             {open ? <X size={20} /> : <Menu size={20} />}
@@ -59,7 +61,7 @@ export function Navbar() {
                   </NavLink>
                 </motion.div>
               ))}
-              <div className="mt-3 px-1"><Link to="/analyze" className="btn btn-primary w-full">Analyze an Email</Link></div>
+              <div className="mt-3 grid grid-cols-2 gap-2 px-1"><SoundToggle full /><Link to="/analyze" className="btn btn-primary w-full">Analyze an Email</Link></div>
             </div>
           </motion.nav>
         )}
