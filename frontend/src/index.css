@@ -23,7 +23,8 @@
 }
 
 @layer base {
-  html { scroll-behavior: smooth; color-scheme: dark; }
+  html { scroll-behavior: smooth; color-scheme: dark; overflow-x: clip; }
+  body { overflow-x: clip; }
   body {
     @apply bg-ink text-fg font-sans antialiased;
     background-image:
@@ -89,7 +90,7 @@
 }
 
 /* HUD corner brackets: the sharp, technical signature on key surfaces */
-.ticks { position: relative; }
+.ticks:not(.absolute):not(.fixed) { position: relative; }
 .ticks::after {
   content: ""; position: absolute; inset: -1px; pointer-events: none; z-index: 1;
   --t: var(--color-cyan); --l: 12px;

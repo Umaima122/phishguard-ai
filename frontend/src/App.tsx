@@ -1,6 +1,7 @@
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { lazy, Suspense, useEffect, type ReactNode } from 'react'
 import { BrowserRouter, Link, Route, Routes, useLocation } from 'react-router-dom'
+import { Backdrop } from './components/Backdrop'
 import { Footer, Navbar } from './components/Navbar'
 import { EmptyState, Toaster } from './components/ui'
 import { AppProvider } from './lib/store'
@@ -41,6 +42,7 @@ export default function App() {
     <MotionConfig reducedMotion="user">
       <AppProvider>
         <BrowserRouter>
+          <Backdrop />
           <div className="flex min-h-screen flex-col">
             <Navbar />
             <div className="flex-1"><Suspense fallback={<div className="mx-auto max-w-7xl space-y-4 px-5 pt-12 lg:px-8"><div className="skeleton h-10 w-72" /><div className="skeleton h-80" /></div>}><Routed /></Suspense></div>
