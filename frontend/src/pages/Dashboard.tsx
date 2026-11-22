@@ -17,9 +17,9 @@ const axis = { stroke: '#64748b', fontSize: 11, tickLine: false, axisLine: false
 function TipBox({ active, payload, label }: { active?: boolean; payload?: { name: string; value: number; color?: string; payload?: { fill?: string } }[]; label?: string }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-[2px] border border-line bg-deep/95 px-3 py-2 text-xs shadow-xl backdrop-blur">
+    <div className="rounded-lg border border-line bg-deep/95 px-3 py-2 text-xs shadow-xl backdrop-blur">
       {label && <div className="mb-1 font-mono text-faint">{label}</div>}
-      {payload.map(p => <div key={p.name} className="flex items-center gap-2"><span className="h-2 w-2 rounded-[2px]" style={{ background: p.color ?? p.payload?.fill }} /><span className="text-dim">{p.name}</span><span className="ml-auto pl-3 font-mono text-fg">{p.value}</span></div>)}
+      {payload.map(p => <div key={p.name} className="flex items-center gap-2"><span className="h-2 w-2 rounded-lg" style={{ background: p.color ?? p.payload?.fill }} /><span className="text-dim">{p.name}</span><span className="ml-auto pl-3 font-mono text-fg">{p.value}</span></div>)}
     </div>
   )
 }
@@ -34,20 +34,20 @@ function Panel({ title, right, children, className = '' }: { title: string; righ
 }
 
 function Legend() {
-  return <div className="flex gap-4 text-xs text-dim">{[['Phishing', C_PHISH], ['Legitimate', C_LEGIT]].map(([n, c]) => <span key={n} className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-[2px]" style={{ background: c }} />{n}</span>)}</div>
+  return <div className="flex gap-4 text-xs text-dim">{[['Phishing', C_PHISH], ['Legitimate', C_LEGIT]].map(([n, c]) => <span key={n} className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-lg" style={{ background: c }} />{n}</span>)}</div>
 }
 
 function ModelCard({ e }: { e: EngineInfo }) {
   const m = e.metrics
   if (!m) return (
-    <div className="min-w-0 rounded-[3px] border border-line bg-ink/40 p-5">
+    <div className="min-w-0 rounded-xl border border-line bg-ink/40 p-5">
       <div className="text-sm font-medium">{e.name}</div>
       <div className="mt-2 text-sm text-dim">Status: <span className="text-warn">{e.status}</span>{e.status === 'training' && ' It is trained during deployment.'}{e.error && e.status !== 'training' && <span className="block text-xs text-faint">{e.error}</span>}</div>
     </div>
   )
   const cm = m.confusion_matrix, max = Math.max(...cm.flat())
   return (
-    <div className="min-w-0 rounded-[3px] border border-line bg-ink/40 p-5">
+    <div className="min-w-0 rounded-xl border border-line bg-ink/40 p-5">
       <div className="flex items-center justify-between gap-2"><div className="text-sm font-medium">{e.name}</div><span className="chip border-safe/40 bg-safe/10 text-safe">{e.status}</span></div>
       <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-5">
         {([['Accuracy', m.accuracy], ['Precision', m.precision], ['Recall', m.recall], ['F1', m.f1], ['ROC-AUC', m.roc_auc]] as const).map(([k, v]) => (
@@ -60,7 +60,7 @@ function ModelCard({ e }: { e: EngineInfo }) {
           <div className="grid grid-cols-[auto_repeat(2,72px)] gap-1 text-center text-xs">
             <span /><span className="text-faint">Pred. safe</span><span className="text-faint">Pred. phish</span>
             {cm.map((row, i) => [<span key={`l${i}`} className="self-center pr-2 text-right text-faint">{i ? 'Phish' : 'Safe'}</span>,
-              ...row.map((v, j) => <div key={`${i}${j}`} title={`${i ? 'Actual phishing' : 'Actual safe'} → ${j ? 'predicted phishing' : 'predicted safe'}: ${v}`} className="grid h-14 place-items-center rounded-[2px] font-mono text-sm text-fg" style={{ background: i === j ? `rgb(0 229 255 / ${0.1 + 0.4 * v / max})` : `rgb(248 113 113 / ${0.12 + 0.5 * v / max})` }}>{v.toLocaleString()}</div>)])}
+              ...row.map((v, j) => <div key={`${i}${j}`} title={`${i ? 'Actual phishing' : 'Actual safe'} → ${j ? 'predicted phishing' : 'predicted safe'}: ${v}`} className="grid h-14 place-items-center rounded-lg font-mono text-sm text-fg" style={{ background: i === j ? `rgb(139 141 255 / ${0.1 + 0.4 * v / max})` : `rgb(248 113 113 / ${0.12 + 0.5 * v / max})` }}>{v.toLocaleString()}</div>)])}
           </div>
         </div>
         <div className="space-y-1.5 text-[13px] text-dim">
@@ -148,7 +148,7 @@ export default function Dashboard() {
                 {s.top_warnings.map(w => (
                   <li key={w.title} className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 text-sm">
                     <span className="truncate text-dim">{w.title}</span><span className="font-mono text-xs text-fg">{w.count}</span>
-                    <div className="col-span-2 h-1.5 rounded-[1px] bg-white/[0.05]"><motion.div className="h-full rounded-[1px] bg-cyan" initial={{ width: 0 }} whileInView={{ width: `${(w.count / s.top_warnings[0].count) * 100}%` }} viewport={{ once: true }} transition={{ duration: 0.9 }} /></div>
+                    <div className="col-span-2 h-1.5 rounded-full bg-white/[0.05]"><motion.div className="h-full rounded-full bg-cyan" initial={{ width: 0 }} whileInView={{ width: `${(w.count / s.top_warnings[0].count) * 100}%` }} viewport={{ once: true }} transition={{ duration: 0.9 }} /></div>
                   </li>
                 ))}
                 {!s.top_warnings.length && <li className="text-sm text-dim">No warnings recorded yet.</li>}
@@ -168,7 +168,7 @@ export default function Dashboard() {
               <ul className="divide-y divide-line">
                 {recent.map(h => (
                   <li key={h.id} className="flex items-center gap-3 py-3">
-                    <span className={`h-2 w-2 shrink-0 rounded-[1px]`} style={{ background: h.classification === 'Potential Phishing' ? C_PHISH : C_LEGIT }} />
+                    <span className={`h-2 w-2 shrink-0 rounded-full`} style={{ background: h.classification === 'Potential Phishing' ? C_PHISH : C_LEGIT }} />
                     <div className="min-w-0 flex-1"><div className="truncate text-sm">{h.subject || '(no subject)'}</div><div className="truncate font-mono text-[11px] text-faint">{h.sender || 'no sender'} · {new Date(h.created_at).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}</div></div>
                     <span className={`font-mono text-xs ${levelStyle[h.threat_level].text}`}>{h.score.toFixed(0)}</span>
                   </li>

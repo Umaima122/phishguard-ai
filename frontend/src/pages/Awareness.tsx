@@ -51,8 +51,8 @@ function Lessons() {
                 <li key={x.id}>
                   <button onClick={() => setActive(i)} className="group flex w-full items-center gap-4 py-2.5 text-left">
                     <span className="relative grid h-[15px] w-[15px] shrink-0 place-items-center">
-                      <motion.span className="absolute inset-0 rounded-[2px] border" initial={false}
-                        animate={{ borderColor: isActive ? '#00E5FF' : i <= active ? 'rgba(0,229,255,0.5)' : 'rgba(148,163,194,0.25)', backgroundColor: isActive ? 'rgba(0,229,255,0.15)' : '#070B14', scale: isActive ? 1.15 : 1 }} />
+                      <motion.span className="absolute inset-0 rounded-lg border" initial={false}
+                        animate={{ borderColor: isActive ? '#8B8DFF' : i <= active ? 'rgba(139,141,255,0.5)' : 'rgba(148,163,194,0.25)', backgroundColor: isActive ? 'rgba(139,141,255,0.15)' : '#070B14', scale: isActive ? 1.15 : 1 }} />
                       {(isActive || i < active) && <motion.span layoutId={isActive ? 'lesson-dot' : undefined} className="relative h-[5px] w-[5px] bg-cyan" />}
                     </span>
                     <span className="min-w-0">
@@ -132,7 +132,7 @@ function Quiz() {
         <AnimatePresence mode="wait">
           {done ? (
             <motion.div key="done" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} className="py-6 text-center">
-              <div className="mx-auto grid h-16 w-16 place-items-center rounded-[4px] border border-cyan/30 bg-cyan/10 text-cyan"><Trophy size={28} /></div>
+              <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl border border-cyan/30 bg-cyan/10 text-cyan"><Trophy size={28} /></div>
               <div className="h-display mt-5 text-4xl font-semibold">{score}/{quiz.length}</div>
               <p className="mt-2 text-dim">{score === quiz.length ? 'Perfect. You spot phishing like a pro.' : score >= quiz.length - 2 ? 'Strong instincts. Review the lessons for the ones you missed.' : 'Good start. The lessons above cover every question.'}</p>
               <button className="btn btn-primary mt-6" onClick={restart}><RotateCcw size={16} />Try again</button>
@@ -146,8 +146,8 @@ function Quiz() {
                   const state = picked === null ? 'idle' : n === q.correct ? 'right' : n === picked ? 'wrong' : 'dim'
                   return (
                     <motion.button key={o} whileTap={picked === null ? { scale: 0.98 } : undefined} onClick={() => pick(n)} disabled={picked !== null}
-                      className={`flex items-center gap-3 rounded-[3px] border px-4 py-3.5 text-left text-sm transition ${state === 'idle' ? 'border-line bg-white/[0.02] hover:border-cyan/40 hover:bg-cyan/[0.04]' : state === 'right' ? 'border-safe/50 bg-safe/10' : state === 'wrong' ? 'border-danger/50 bg-danger/10' : 'border-line opacity-50'}`}>
-                      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-[2px] border border-line font-mono text-[11px] text-dim">{String.fromCharCode(65 + n)}</span>
+                      className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 text-left text-sm transition ${state === 'idle' ? 'border-line bg-white/[0.02] hover:border-cyan/40 hover:bg-cyan/[0.04]' : state === 'right' ? 'border-safe/50 bg-safe/10' : state === 'wrong' ? 'border-danger/50 bg-danger/10' : 'border-line opacity-50'}`}>
+                      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg border border-line font-mono text-[11px] text-dim">{String.fromCharCode(65 + n)}</span>
                       <span className="flex-1">{o}</span>
                       {state === 'right' && <CircleCheck size={18} className="text-safe" />}{state === 'wrong' && <CircleX size={18} className="text-danger" />}
                     </motion.button>
@@ -157,7 +157,7 @@ function Quiz() {
               <AnimatePresence>
                 {picked !== null && (
                   <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="overflow-hidden">
-                    <div className={`mt-5 rounded-[3px] border p-4 text-sm ${picked === q.correct ? 'border-safe/30 bg-safe/[0.06]' : 'border-danger/30 bg-danger/[0.06]'}`}>
+                    <div className={`mt-5 rounded-xl border p-4 text-sm ${picked === q.correct ? 'border-safe/30 bg-safe/[0.06]' : 'border-danger/30 bg-danger/[0.06]'}`}>
                       <div className={`font-medium ${picked === q.correct ? 'text-safe' : 'text-danger'}`}>{picked === q.correct ? 'Correct' : 'Not quite'}</div>
                       <p className="mt-1 leading-relaxed text-dim">{q.explanation}</p>
                     </div>

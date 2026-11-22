@@ -25,7 +25,8 @@ export default function Analyzer() {
   const [pending, setPending] = useState<AnalysisResult | null>(null)
   const [error, setError] = useState('')
   const [sampleOpen, setSampleOpen] = useState(false)
-  const [meta, setMeta] = useState({ subject: '', sender: '' })
+  const [meta, setMeta] = useState({ subject: '', sender: '', body: '' })
+  const [editing, setEditing] = useState(false)
   const resultsRef = useRef<HTMLDivElement>(null)
 
   const demo = backend !== 'online'
@@ -41,12 +42,12 @@ export default function Analyzer() {
     setSubject(s.subject); setSender(s.sender); setBody(s.body); setSampleOpen(false); setError('')
     toast({ kind: 'info', title: `Loaded sample: ${s.label}` })
   }
-  const clear = () => { setSubject(''); setSender(''); setBody(''); setError(''); setResult(null); setPhase('idle') }
+  const clear = () => { setEditing(false); setSubject(''); setSender(''); setBody(''); setError(''); setResult(null); setPhase('idle') }
 
   const run = async () => {
     if (body.trim().length < 10) { setError('Paste the email body first (at least 10 characters).'); return }
     setError(''); setResult(null); setPending(null); setPhase('scanning')
-    setMeta({ subject, sender })
+    setMeta({ subject, sender, body }); setEditing(false)
     window.scrollTo({ top: (resultsRef.current?.offsetTop ?? 0) - 90, behavior: 'smooth' })
     const req = { subject, sender, body, engine: choice, save_to_history: save }
     try {
@@ -84,12 +85,22 @@ export default function Analyzer() {
   ]
 
   return (
-    <div className="mx-auto max-w-7xl px-5 pt-10 lg:px-8">
+    <div className="mx-auto max-w-[1440px] px-5 pt-10 lg:px-8">
       <SectionHeader eyebrow="Email Analysis Studio" title="Investigate an email" sub="Paste the subject, sender and body. PhishGuard runs the machine-learning model, checks the language, links and sender, then explains what it found." />
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
+      {phase === 'done' && !editing && (
+        <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} className="panel mb-5 flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center">
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-[15px] font-medium">{meta.subject || '(no subject)'}</div>
+            <div className="truncate font-mono text-[12px] text-faint">{meta.sender || 'No sender'} · {meta.body.length.toLocaleString()} characters</div>
+          </div>
+          <button className="btn btn-ghost" onClick={() => setEditing(true)}>Edit email</button>
+          <button className="btn btn-primary" onClick={() => void run()}>Re-analyze</button>
+        </motion.div>
+      )}
+      <div className={`grid gap-6 ${phase === 'done' && !editing ? '' : 'lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]'}`}>
         {/* Input */}
-        <div className="lg:sticky lg:top-24 lg:self-start">
+        <div className={`lg:sticky lg:top-24 lg:self-start ${phase === 'done' && !editing ? 'hidden' : ''}`}>
           <div className="panel ticks p-5" onKeyDown={onKey}>
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2 text-sm font-medium"><Mail size={16} className="text-cyan" />Email input</div>
@@ -99,7 +110,7 @@ export default function Analyzer() {
                   {sampleOpen && (
                     <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="panel absolute right-0 z-30 mt-2 w-72 bg-deep p-1.5">
                       {sampleEmails.map(s => (
-                        <button key={s.id} onClick={() => loadSample(s.id)} className="flex w-full items-center justify-between rounded-[2px] px-3 py-2 text-left text-sm hover:bg-white/[0.05]">
+                        <button key={s.id} onClick={() => loadSample(s.id)} className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm hover:bg-white/[0.05]">
                           <span>{s.label}</span>
                           <span className={`font-mono text-[10px] ${s.kind === 'phishing' ? 'text-danger' : s.kind === 'legitimate' ? 'text-safe' : 'text-warn'}`}>{s.kind}</span>
                         </button>
@@ -127,11 +138,11 @@ export default function Analyzer() {
 
             <div className="mt-3">
               <div className="mb-1.5 text-xs text-dim">Model</div>
-              <div className="grid grid-cols-3 gap-1 rounded-[3px] border border-line bg-ink/50 p-1">
+              <div className="grid grid-cols-3 gap-1 rounded-xl border border-line bg-ink/50 p-1">
                 {engines.map(e => (
                   <Tip key={e.k} text={demo ? 'Backend offline: demo heuristic only' : e.hint}>
-                    <button disabled={!e.ok} onClick={() => setChoice(e.k)} className={`relative w-full rounded-[2px] px-2 py-2 text-[13px] font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${choice === e.k && e.ok ? 'text-ink' : 'text-dim hover:text-fg'}`}>
-                      {choice === e.k && e.ok && <motion.span layoutId="eng" className="absolute inset-0 rounded-[2px] bg-cyan" transition={{ type: 'spring', damping: 30, stiffness: 400 }} />}
+                    <button disabled={!e.ok} onClick={() => setChoice(e.k)} className={`relative w-full rounded-lg px-2 py-2 text-[13px] font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${choice === e.k && e.ok ? 'text-ink' : 'text-dim hover:text-fg'}`}>
+                      {choice === e.k && e.ok && <motion.span layoutId="eng" className="absolute inset-0 rounded-lg bg-cyan" transition={{ type: 'spring', damping: 30, stiffness: 400 }} />}
                       <span className="relative">{e.label}</span>
                     </button>
                   </Tip>
@@ -140,9 +151,9 @@ export default function Analyzer() {
               {!demo && bert && !bertReady && <div className="mt-1.5 text-[11px] text-faint">BERT engine: {bert.status}</div>}
             </div>
 
-            <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-[3px] border border-line bg-ink/30 p-3">
+            <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-ink/30 p-3">
               <input type="checkbox" className="peer sr-only" checked={save} onChange={e => setSave(e.target.checked)} disabled={demo} />
-              <span className="mt-0.5 flex h-5 w-9 shrink-0 items-center rounded-[1px] bg-white/10 p-0.5 transition peer-checked:bg-cyan peer-disabled:opacity-40 peer-focus-visible:ring-2 peer-focus-visible:ring-cyan [&>span]:transition peer-checked:[&>span]:translate-x-4"><span className="h-4 w-4 rounded-[1px] bg-fg" /></span>
+              <span className="mt-0.5 flex h-5 w-9 shrink-0 items-center rounded-full bg-white/10 p-0.5 transition peer-checked:bg-cyan peer-disabled:opacity-40 peer-focus-visible:ring-2 peer-focus-visible:ring-cyan [&>span]:transition peer-checked:[&>span]:translate-x-4"><span className="h-4 w-4 rounded-full bg-fg" /></span>
               <span className="text-[12.5px] leading-snug text-dim"><span className="text-fg">Save result to history.</span> Stores the subject, sender, the first 140 characters and the result, never the full email. {demo && <span className="text-warn">Needs the backend.</span>}</span>
             </label>
 
