@@ -7,6 +7,7 @@ import { EmptyState, SectionHeader, Tip } from '../components/ui'
 import { sampleEmails } from '../data/sampleEmails'
 import { ApiError, api } from '../lib/api'
 import { analyzeDemo } from '../lib/demo'
+import { sfx } from '../lib/sound'
 import { useApp } from '../lib/store'
 import type { AnalysisResult, EngineChoice } from '../lib/types'
 
@@ -47,7 +48,7 @@ export default function Analyzer() {
   const run = async () => {
     if (body.trim().length < 10) { setError('Paste the email body first (at least 10 characters).'); return }
     setError(''); setResult(null); setPending(null); setPhase('scanning')
-    setMeta({ subject, sender, body }); setEditing(false)
+    setMeta({ subject, sender, body }); setEditing(false); sfx('scan')
     window.scrollTo({ top: (resultsRef.current?.offsetTop ?? 0) - 90, behavior: 'smooth' })
     const req = { subject, sender, body, engine: choice, save_to_history: save }
     try {
@@ -71,7 +72,7 @@ export default function Analyzer() {
 
   const finish = useCallback(() => {
     if (!pending) return
-    setResult(pending); setPhase('done'); setLastResult(pending)
+    setResult(pending); setPhase('done'); setLastResult(pending); sfx(pending.classification === 'Potential Phishing' ? 'alert' : 'safe')
     if (pending.source === 'demo') addSessionResult(pending)
     if (pending.saved) toast({ kind: 'success', title: 'Saved to history' })
   }, [pending, addSessionResult, setLastResult, toast])
