@@ -61,7 +61,7 @@ export function FeatureCarousel({ items }: { items: Feature[] }) {
               animate={{ x, opacity: hidden ? 0 : slot === 0 ? 1 : slot === -1 ? 0 : 0.42 - (slot - 1) * 0.14, scale: slot === 0 ? 1 : 0.96 }}
               transition={hidden ? { duration: 0 } : { type: 'spring', stiffness: 170, damping: 26, mass: 0.9 }}>
               <div className="flex items-start justify-between">
-                <div className="grid h-12 w-12 place-items-center rounded-[3px] border border-cyan/25 bg-cyan/[0.07] text-cyan"><f.icon size={22} strokeWidth={1.75} /></div>
+                <div className="grid h-12 w-12 place-items-center rounded-xl border border-cyan/25 bg-cyan/[0.07] text-cyan"><f.icon size={22} strokeWidth={1.75} /></div>
                 <span className="font-display text-5xl font-semibold leading-none text-white/[0.06]">{String(i + 1).padStart(2, '0')}</span>
               </div>
               <h3 className="mt-6 font-display text-[22px] font-medium tracking-tight">{f.title}</h3>

@@ -75,7 +75,7 @@ export function Backdrop() {
           const a = Math.min(0.85, depth * (0.32 + lift * 0.5))
           const s = Math.max(0.6, p.f * 0.028)
           const violet = (c * 7 + r * 3) % 23 === 0
-          ctx.fillStyle = violet ? `rgba(139,92,246,${a})` : `rgba(0,229,255,${a})`
+          ctx.fillStyle = violet ? `rgba(167,139,250,${a})` : `rgba(96,165,250,${a})`
           ctx.fillRect(p.x - s / 2, p.y - s / 2, s, s)
         }
       }
@@ -94,12 +94,12 @@ export function Backdrop() {
         for (let j = i + 1; j < pts.length; j++) {
           const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y, d = Math.hypot(dx, dy)
           if (d < 150) {
-            ctx.strokeStyle = `rgba(0,229,255,${(1 - d / 150) * 0.16 * Math.min(pts[i].a, pts[j].a)})`
+            ctx.strokeStyle = `rgba(129,140,248,${(1 - d / 150) * 0.16 * Math.min(pts[i].a, pts[j].a)})`
             ctx.lineWidth = 1
             ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke()
           }
         }
-        ctx.fillStyle = `rgba(139,92,246,${pts[i].a * 0.7})`
+        ctx.fillStyle = `rgba(165,180,252,${pts[i].a * 0.8})`
         ctx.fillRect(pts[i].x - 1.5, pts[i].y - 1.5, 3, 3)
       }
 
@@ -128,10 +128,14 @@ export function Backdrop() {
 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      {/* Glowing orbs, slow drift */}
+      <div className="orb absolute -top-[28vh] -left-[18vw] h-[78vh] w-[78vh] rounded-full" style={{ background: 'radial-gradient(circle at 60% 60%, rgba(37,99,235,0.55), rgba(29,78,216,0.18) 45%, transparent 70%)', animationDuration: '26s' }} />
+      <div className="orb absolute top-[30vh] -right-[22vw] h-[90vh] w-[90vh] rounded-full" style={{ background: 'radial-gradient(circle at 35% 40%, rgba(67,56,202,0.5), rgba(49,46,129,0.2) 45%, transparent 70%)', animationDuration: '32s', animationDelay: '-8s' }} />
+      <div className="orb absolute -bottom-[45vh] left-[18vw] h-[80vh] w-[80vh] rounded-full" style={{ background: 'radial-gradient(circle at 50% 30%, rgba(59,130,246,0.45), rgba(30,64,175,0.15) 50%, transparent 70%)', animationDuration: '38s', animationDelay: '-15s' }} />
       <canvas ref={ref} className="absolute inset-0" />
       {/* Keeps text readable: fades the field toward the top and edges */}
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(7,11,20,0.92) 0%, rgba(7,11,20,0.55) 38%, rgba(7,11,20,0.25) 70%, rgba(7,11,20,0.6) 100%)' }} />
-      <div className="absolute inset-0" style={{ background: 'radial-gradient(120% 80% at 50% 50%, transparent 55%, rgba(7,11,20,0.85) 100%)' }} />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(4,6,14,0.55) 0%, rgba(4,6,14,0.25) 40%, rgba(4,6,14,0.1) 70%, rgba(4,6,14,0.5) 100%)' }} />
+      <div className="absolute inset-0" style={{ background: 'radial-gradient(130% 90% at 50% 45%, transparent 50%, rgba(4,6,14,0.75) 100%)' }} />
     </div>
   )
 }

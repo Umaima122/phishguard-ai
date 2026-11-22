@@ -15,10 +15,10 @@ export function HeroVisual() {
             initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.6, delay: 0.3 + i * 0.07 }} />
         ))}
         {nodes.map(([x, y], i) => (
-          <motion.circle key={i} cx={x} cy={y} r={2.5} fill={i % 3 ? '#00E5FF' : '#8B5CF6'} initial={{ opacity: 0 }} animate={{ opacity: [0.3, 1, 0.3] }}
+          <motion.circle key={i} cx={x} cy={y} r={2.5} fill={i % 3 ? '#8B8DFF' : '#A78BFA'} initial={{ opacity: 0 }} animate={{ opacity: [0.3, 1, 0.3] }}
             transition={{ duration: 3, delay: i * 0.25, repeat: Infinity }} />
         ))}
-        <defs><linearGradient id="edge" x1="0" x2="1"><stop offset="0" stopColor="#00E5FF" stopOpacity=".35" /><stop offset="1" stopColor="#8B5CF6" stopOpacity=".35" /></linearGradient></defs>
+        <defs><linearGradient id="edge" x1="0" x2="1"><stop offset="0" stopColor="#8B8DFF" stopOpacity=".35" /><stop offset="1" stopColor="#A78BFA" stopOpacity=".35" /></linearGradient></defs>
       </svg>
 
       {/* radar */}
@@ -27,7 +27,7 @@ export function HeroVisual() {
         <div className="absolute inset-[14%] rounded-full border border-cyan/10" />
         <div className="absolute inset-[30%] rounded-full border border-violet/20" />
         <div className="absolute inset-0 animate-spin-slow rounded-full border border-dashed border-violet/25" />
-        <motion.div className="absolute inset-0 rounded-full" style={{ background: 'conic-gradient(from 0deg, transparent 0deg, rgb(0 229 255 / 0.22) 40deg, transparent 70deg)' }}
+        <motion.div className="absolute inset-0 rounded-full" style={{ background: 'conic-gradient(from 0deg, transparent 0deg, rgb(139 141 255 / 0.22) 40deg, transparent 70deg)' }}
           animate={{ rotate: 360 }} transition={{ duration: 5, repeat: Infinity, ease: 'linear' }} />
         <div className="absolute inset-[42%] rounded-full bg-cyan/10 blur-xl" />
         {[[22, 30], [70, 62], [35, 75]].map(([l, t], i) => (
@@ -43,9 +43,9 @@ export function HeroVisual() {
         <div className="flex items-center gap-2 text-[11px] text-dim"><Mail size={13} className="text-cyan" /><span className="font-mono">security@paypa1-help.xyz</span></div>
         <div className="mt-2 text-[13px] font-medium">Your account has been suspended</div>
         <div className="mt-2 space-y-1.5">
-          <div className="h-1.5 w-full rounded-[2px] bg-white/[0.07]" /><div className="h-1.5 w-11/12 rounded-[2px] bg-danger/30" /><div className="h-1.5 w-4/6 rounded-[2px] bg-white/[0.07]" />
+          <div className="h-1.5 w-full rounded-lg bg-white/[0.07]" /><div className="h-1.5 w-11/12 rounded-lg bg-danger/30" /><div className="h-1.5 w-4/6 rounded-lg bg-white/[0.07]" />
         </div>
-        <div className="mt-3 flex items-center gap-1.5 rounded-[2px] border border-danger/30 bg-danger/10 px-2 py-1 font-mono text-[10px] text-danger"><Link2 size={11} />http://paypa1-help.xyz/verify</div>
+        <div className="mt-3 flex items-center gap-1.5 rounded-lg border border-danger/30 bg-danger/10 px-2 py-1 font-mono text-[10px] text-danger"><Link2 size={11} />http://paypa1-help.xyz/verify</div>
       </motion.div>
 
       {/* verdict chip */}

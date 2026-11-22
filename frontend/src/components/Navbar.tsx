@@ -33,7 +33,7 @@ export function Navbar() {
         </Link>
         <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex">
           {NAV.map(n => (
-            <NavLink key={n.to} to={n.to} className={({ isActive }) => `relative rounded-[2px] px-3 py-2 text-[13.5px] transition ${isActive ? 'text-fg' : 'text-dim hover:text-fg'}`}>
+            <NavLink key={n.to} to={n.to} className={({ isActive }) => `relative rounded-lg px-3 py-2 text-[13.5px] transition ${isActive ? 'text-fg' : 'text-dim hover:text-fg'}`}>
               {({ isActive }) => (<>
                 {n.label}
                 {isActive && <motion.span layoutId="nav-ind" className="absolute inset-x-3 -bottom-[13px] h-px bg-cyan" />}
@@ -54,7 +54,7 @@ export function Navbar() {
             <div className="flex flex-col gap-1 px-5 py-4">
               {[{ to: '/', label: 'Home' }, ...NAV].map((n, i) => (
                 <motion.div key={n.to} initial={{ x: -12, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.03 }}>
-                  <NavLink to={n.to} end className={({ isActive }) => `flex items-center justify-between rounded-[3px] px-4 py-3 text-[15px] ${isActive ? 'bg-white/[0.05] text-fg' : 'text-dim'}`}>
+                  <NavLink to={n.to} end className={({ isActive }) => `flex items-center justify-between rounded-xl px-4 py-3 text-[15px] ${isActive ? 'bg-white/[0.05] text-fg' : 'text-dim'}`}>
                     {n.label}
                   </NavLink>
                 </motion.div>
