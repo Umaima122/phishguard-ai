@@ -5,7 +5,7 @@ import { downloadReport } from '../lib/report'
 import { useApp } from '../lib/store'
 import type { AnalysisResult, Indicator, UrlReport } from '../lib/types'
 import { ScoreRing, scoreColor } from './ScoreRing'
-import { DemoBadge, SevBadge, Tip, levelStyle, sevStyle } from './ui'
+import { DemoBadge, SevBadge, Tip, levelStyle } from './ui'
 
 const fade = { hidden: { opacity: 0, y: 14 }, show: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.08 * i, duration: 0.45, ease: [0.16, 1, 0.3, 1] as const } }) }
 
@@ -22,19 +22,41 @@ function Card({ i, icon, title, count, children, className = '' }: { i: number; 
   )
 }
 
-function Expandable({ head, children, defaultOpen = false }: { head: ReactNode; children: ReactNode; defaultOpen?: boolean }) {
+function Expandable({ head, children, defaultOpen = false, edge }: { head: ReactNode; children: ReactNode; defaultOpen?: boolean; edge?: string }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="rounded-[3px] border border-line bg-ink/40 transition hover:border-line-strong">
-      <button className="flex w-full items-center gap-3 px-4 py-3 text-left" onClick={() => setOpen(o => !o)} aria-expanded={open}>
+    <div className="group relative border-b border-line last:border-b-0">
+      <span className="absolute top-3 bottom-3 left-0 w-[2px] transition-opacity" style={{ background: edge ?? 'transparent', opacity: open ? 1 : 0.55 }} />
+      <button className="flex w-full items-center gap-3 py-3.5 pr-1 pl-4 text-left transition-colors hover:bg-white/[0.025]" onClick={() => setOpen(o => !o)} aria-expanded={open}>
         <div className="min-w-0 flex-1">{head}</div>
-        <ChevronDown size={16} className={`shrink-0 text-faint transition ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={15} className={`shrink-0 text-faint transition-transform duration-200 ${open ? 'rotate-180 text-dim' : ''}`} />
       </button>
       <AnimatePresence initial={false}>
-        {open && <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-          <div className="px-4 pb-4 text-sm text-dim">{children}</div>
+        {open && <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.22, ease: [0.2, 0.8, 0.2, 1] }} className="overflow-hidden">
+          <div className="pr-4 pb-4 pl-4 text-sm text-dim">{children}</div>
         </motion.div>}
       </AnimatePresence>
+    </div>
+  )
+}
+
+const SEV_HEX = { high: '#f87171', medium: '#f59e0b', low: '#64748b' } as const
+
+function SeverityBar({ items }: { items: { severity: 'high' | 'medium' | 'low' }[] }) {
+  const counts = (['high', 'medium', 'low'] as const).map(k => ({ k, n: items.filter(i => i.severity === k).length }))
+  const total = items.length || 1
+  return (
+    <div className="mb-3">
+      <div className="flex h-[3px] w-full gap-[2px] overflow-hidden">
+        {counts.filter(c => c.n).map(c => (
+          <motion.span key={c.k} className="h-full" style={{ background: SEV_HEX[c.k] }} initial={{ width: 0 }} animate={{ width: `${(c.n / total) * 100}%` }} transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }} />
+        ))}
+      </div>
+      <div className="mt-2.5 flex gap-5 text-[12.5px]">
+        {counts.map(c => (
+          <span key={c.k} className={c.n ? 'text-dim' : 'text-faint/60'}><span className="font-mono text-fg" style={{ color: c.n ? SEV_HEX[c.k] : undefined }}>{c.n}</span> {c.k}</span>
+        ))}
+      </div>
     </div>
   )
 }
@@ -53,7 +75,7 @@ function IndicatorList({ items }: { items: Indicator[] }) {
 function UrlRow({ u }: { u: UrlReport }) {
   const { toast } = useApp()
   return (
-    <Expandable defaultOpen={u.risk === 'high'} head={
+    <Expandable edge={SEV_HEX[u.risk]} defaultOpen={u.risk === 'high'} head={
       <div className="flex items-center gap-3">
         <SevBadge s={u.risk} />
         <span className="min-w-0 truncate font-mono text-[12.5px] text-fg" title={u.url}>{u.url}</span>
@@ -153,20 +175,33 @@ export function AnalysisResults({ r, meta, onReset }: { r: AnalysisResult; meta:
 
         <Card i={3} icon={<TriangleAlert size={16} />} title="Warning indicators" count={r.warnings.length}>
           {r.warnings.length === 0 ? <div className="flex items-center gap-2 text-sm text-dim"><CircleCheck size={16} className="text-safe" />No rule-based warning signs detected.</div> : (
-            <div className="space-y-2">
-              {r.warnings.map(w => (
-                <Expandable key={w.id} head={<div className="flex items-center gap-3"><SevBadge s={w.severity} /><span className="text-sm text-fg">{w.title}</span><span className="ml-auto hidden font-mono text-[10px] text-faint sm:inline">{w.category}</span></div>}>
-                  <div className="mb-1.5 text-xs text-faint">Matched in the email:</div>
-                  <div className="flex flex-wrap gap-1.5">{w.evidence.map(e => <span key={e} className={`rounded-[2px] border px-2 py-0.5 font-mono text-xs ${sevStyle[w.severity]}`}>“{e}”</span>)}</div>
-                </Expandable>
-              ))}
+            <div>
+              <SeverityBar items={r.warnings} />
+              <div className="border-t border-line">
+                {r.warnings.map((w, n) => (
+                  <motion.div key={w.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 + n * 0.05 }}>
+                    <Expandable edge={SEV_HEX[w.severity]} head={
+                      <div className="flex items-baseline gap-3">
+                        <span className="min-w-0 flex-1 text-[14px] text-fg">{w.title}</span>
+                        <span className="hidden text-[12px] text-faint sm:inline">{w.category}</span>
+                      </div>}>
+                      <div className="mb-2 text-[12px] text-faint">Found in the email</div>
+                      <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+                        {w.evidence.map(e => (
+                          <span key={e} className="font-mono text-[12.5px] text-fg/90 underline decoration-2 underline-offset-4" style={{ textDecorationColor: SEV_HEX[w.severity] + 'aa' }}>{e}</span>
+                        ))}
+                      </div>
+                    </Expandable>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           )}
         </Card>
 
         <Card i={4} icon={<Link2 size={16} />} title="Extracted URLs" count={r.urls.length}>
           {r.urls.length === 0 ? <p className="text-sm text-dim">No URLs detected in this email.</p> : (
-            <div className="space-y-2">{r.urls.map(u => <UrlRow key={u.url} u={u} />)}</div>
+            <div className="border-t border-line">{r.urls.map(u => <UrlRow key={u.url} u={u} />)}</div>
           )}
           <p className="mt-3 text-xs text-faint">Static checks only. Links are shown as text and never opened. HTTPS or a clean result doesn't prove a site is safe.</p>
         </Card>

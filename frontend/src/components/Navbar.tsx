@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { BackendPill, Logo } from './ui'
+import { Logo } from './ui'
 
 export const NAV = [
   { to: '/analyze', label: 'Analyze Email' },
@@ -42,7 +42,6 @@ export function Navbar() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-3 lg:ml-0">
-          <div className="hidden sm:block"><BackendPill /></div>
           <Link to="/analyze" className="btn btn-primary hidden !py-2 md:inline-flex">Get Started</Link>
           <button className="btn btn-ghost !p-2 lg:hidden" onClick={() => setOpen(o => !o)} aria-label="Menu" aria-expanded={open}>
             {open ? <X size={20} /> : <Menu size={20} />}
@@ -60,7 +59,7 @@ export function Navbar() {
                   </NavLink>
                 </motion.div>
               ))}
-              <div className="mt-3 flex items-center justify-between px-1"><BackendPill /><Link to="/analyze" className="btn btn-primary">Analyze an Email</Link></div>
+              <div className="mt-3 px-1"><Link to="/analyze" className="btn btn-primary w-full">Analyze an Email</Link></div>
             </div>
           </motion.nav>
         )}
@@ -93,7 +92,7 @@ export function Footer() {
       </div>
       <div className="border-t border-line">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-5 font-mono text-[11px] text-faint sm:flex-row sm:justify-between lg:px-8">
-          <span>© {new Date().getFullYear()} PhishGuard AI · Developed by Umaima Qureshi</span>
+          <span>© {new Date().getFullYear()} RageQuit. All rights reserved. · PhishGuard AI is built by Team RageQuit</span>
           <span>FastAPI · scikit-learn · sentence-transformers · React</span>
         </div>
       </div>
