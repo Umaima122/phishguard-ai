@@ -119,3 +119,6 @@
 .orb { filter: blur(30px); animation: orb-drift 30s ease-in-out infinite; will-change: transform; }
 /* Rim light on orbs, like a planet edge */
 .orb::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 120px rgb(96 165 250 / 0.25); }
+
+@keyframes eq { 0%, 100% { height: 4px; } 50% { height: 16px; } }
+.eq-bar { height: 4px; animation: eq 0.9s ease-in-out infinite; }
